@@ -3,43 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalkulator uspjeha</title>
-<meta name="theme-color" content="#ff9900">
-<style>
-body { margin:0; font-family:'Segoe UI',sans-serif; display:flex; justify-content:center; align-items:center; min-height:100vh; background:#121212; color:white; transition:0.3s; }
-body.light { background:#f9f9f9; color:black; }
-
-.menu { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 25px; width:320px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); transition:0.3s; }
-body.light .menu { background:#fff; color:black; }
-
-.menu h1 { margin-bottom:20px; font-size:1.8em; }
-.menu button { width:100%; padding:15px; margin:10px 0; border:none; border-radius:12px; font-size:1em; font-weight:bold; background:#ff9900; color:white; cursor:pointer; transition:0.2s; }
-.menu button:hover { background:#ffb74d; }
-
-#themeToggle { margin-bottom:15px; width:100%; padding:12px; border-radius:8px; border:none; background:#666; color:white; cursor:pointer; }
-#themeToggle:hover { background:#888; }
-
-footer { margin-top:15px; font-size:0.8em; opacity:0.8; text-align:center; }
-</style>
+<title>Glavni menu</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
 </head>
-<body class="dark">
+<body>
 <div class="menu">
-<h1>Kalkulator uspjeha</h1>
-<button id="themeToggle">Tamna/Svijetla tema</button>
-<button onclick="location.href='kalkulator-ocjena.html'">Kalkulator ocjena</button>
-<button onclick="location.href='kalkulator-opceg.html'">Kalkulator općeg uspjeha</button>
-<button onclick="alert('App preuzimanje još nije implementirano')">Preuzmi aplikaciju</button>
-<footer>Izradio Mario</footer>
+    <h1>Kalkulator uspjeha</h1>
+    <button onclick="location.href='kalkulator-ocjena.html'">Kalkulator ocjena</button>
+    <button onclick="location.href='kalkulator-opceg.html'">Kalkulator općeg uspjeha</button>
+    <button id="installBtn" style="display:none;">📲 Instaliraj app</button>
+    <footer>Izradio Mario</footer>
 </div>
 
-<script>
-const themeBtn = document.getElementById("themeToggle");
-themeBtn.addEventListener("click", ()=>{
-  document.body.classList.toggle("dark");
-  document.body.classList.toggle("light");
-  localStorage.setItem("theme", document.body.className);
-});
-if(localStorage.getItem("theme")) document.body.className = localStorage.getItem("theme");
-</script>
+<script src="script.js"></script>
 </body>
 </html>
