@@ -1,5 +1,5 @@
 {
-  "name": "Kalkulator ocjena",
+  "name": "Kalkulator uspjeha",
   "short_name": "Kalkulator",
   "start_url": "./index.html",
   "display": "standalone",
