@@ -3,19 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Glavni menu</title>
-<link rel="stylesheet" href="style.css">
+<title>Kalkulator uspjeha</title>
+<meta name="theme-color" content="#ff9900">
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+body {
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    color:white;
+}
+.menu {
+    background: rgba(255,255,255,0.1);
+    padding:30px;
+    border-radius:25px;
+    width:320px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+.menu h1 { margin-bottom:20px; font-size:1.8em; }
+.menu button {
+    width:100%;
+    padding:15px;
+    margin:10px 0;
+    border:none;
+    border-radius:12px;
+    font-size:1em;
+    font-weight:bold;
+    background:#ff9900;
+    color:white;
+    cursor:pointer;
+    transition:0.2s;
+}
+.menu button:hover { background:#ffb74d; }
+footer { margin-top:15px; font-size:0.8em; opacity:0.8; text-align:center; color:white; }
+</style>
 </head>
 <body>
 <div class="menu">
     <h1>Kalkulator uspjeha</h1>
     <button onclick="location.href='kalkulator-ocjena.html'">Kalkulator ocjena</button>
     <button onclick="location.href='kalkulator-opceg.html'">Kalkulator općeg uspjeha</button>
-    <button id="installBtn" style="display:none;">📲 Instaliraj app</button>
+    <button id="installBtn">📲 Preuzmi app</button>
     <footer>Izradio Mario</footer>
 </div>
 
-<script src="script.js"></script>
+<script>
+// PWA Instalacija
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = document.getElementById('installBtn');
+    btn.style.display = 'block';
+    btn.addEventListener('click', () => {
+        btn.style.display = 'none';
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+    });
+});
+</script>
 </body>
 </html>
