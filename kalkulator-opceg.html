@@ -5,17 +5,25 @@
 <title>Kalkulator općeg uspjeha</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body { font-family:'Segoe UI',sans-serif'; margin:0; padding:20px; display:flex; justify-content:center; background:#121212; color:white; transition:0.3s;}
+body { font-family:'Segoe UI',sans-serif; margin:0; padding:20px; display:flex; justify-content:center; background:#121212; color:white; transition:0.3s;}
 body.light { background:#f0f0f0; color:black; }
-body.dark { background:#121212; color:white; }
 
 .app { width:360px; padding:30px; border-radius:25px; background:rgba(30,30,30,0.9); box-shadow:0 15px 35px rgba(0,0,0,0.2); transition:0.3s;}
 body.light .app { background:rgba(255,255,255,0.95); }
 
 h2 { text-align:center; font-size:2em; margin-bottom:20px; }
 
-.input-row { display:flex; gap:10px; margin-bottom:10px; padding:10px 12px; border-radius:12px; background:rgba(50,50,50,0.7); box-shadow:0 3px 8px rgba(0,0,0,0.2); transition:0.3s;}
-body.light .input-row { background:rgba(255,255,255,0.8); }
+.input-row {
+  display:flex; 
+  gap:10px; 
+  padding:10px 12px; 
+  border-radius:12px; 
+  background:rgba(50,50,50,0.7); 
+  margin-bottom:10px; 
+  box-shadow:0 2px 6px rgba(0,0,0,0.3);
+  transition:0.3s;
+}
+body.light .input-row { background:rgba(255,255,255,0.9); }
 
 select,input[type=number] { flex:1; padding:10px; border-radius:8px; border:1px solid #333; font-size:1em; }
 body.light select,input[type=number] { border:1px solid #ccc; background:white; color:black; }
@@ -35,7 +43,10 @@ body.light .card { background:rgba(255,255,255,0.8); }
 .avg-number { font-size:48px; font-weight:bold; letter-spacing:1px; }
 .small { opacity:0.8; font-size:0.9em; }
 
-#themeToggle { margin-bottom:15px; }
+#themeToggle { margin-bottom:15px; width:100%; padding:12px; border-radius:8px; border:none; background:#666; color:white; cursor:pointer; }
+#themeToggle:hover { background:#888; }
+
+footer { margin-top:10px; text-align:center; opacity:0.7; }
 </style>
 </head>
 <body class="dark">
@@ -87,39 +98,39 @@ themeBtn.addEventListener("click", () => {
 });
 if(localStorage.getItem("theme")) document.body.className = localStorage.getItem("theme");
 
-// Kalkulator funkcije
-let grades=JSON.parse(localStorage.getItem("grades"))||[];
-function save(){localStorage.setItem("grades",JSON.stringify(grades));}
+// Funkcije kalkulatora
+let grades = JSON.parse(localStorage.getItem("grades")) || [];
+function save(){ localStorage.setItem("grades", JSON.stringify(grades)); }
 function add(){
-  const subject=document.getElementById("subject").value;
-  const grade=parseInt(document.getElementById("grade").value);
-  if(!subject||grade<1||grade>5) return;
-  grades.push({subject,grade});
+  const subject = document.getElementById("subject").value;
+  const grade = parseInt(document.getElementById("grade").value);
+  if(!subject || grade<1 || grade>5) return;
+  grades.push({subject, grade});
   save();
   render();
-  document.getElementById("subject").selectedIndex=0;
-  document.getElementById("grade").value="";
+  document.getElementById("subject").selectedIndex = 0;
+  document.getElementById("grade").value = "";
 }
-function remove(i){grades.splice(i,1); save(); render();}
-function removeAll(){grades=[]; save(); render();}
+function remove(i){ grades.splice(i,1); save(); render(); }
+function removeAll(){ grades=[]; save(); render(); }
 function render(){
-  const container=document.getElementById("cards");
-  container.innerHTML="";
+  const container = document.getElementById("cards");
+  container.innerHTML = "";
   grades.forEach((g,i)=>{
-    const card=document.createElement("div");
-    card.className="card";
-    card.innerHTML=`<span>${g.subject}</span><span class="grade">${g.grade}</span>`;
-    const btn=document.createElement("button");
-    btn.className="delete";
-    btn.textContent="x";
-    btn.onclick=()=>remove(i);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `<span>${g.subject}</span><span class="grade">${g.grade}</span>`;
+    const btn = document.createElement("button");
+    btn.className = "delete";
+    btn.textContent = "x";
+    btn.onclick = ()=>remove(i);
     card.appendChild(btn);
     container.appendChild(card);
   });
   calc();
 }
 function calc(){
-  if(grades.length===0){document.getElementById("avg").textContent="0.00"; return;}
+  if(grades.length===0){ document.getElementById("avg").textContent="0.00"; return; }
   let sum=grades.reduce((a,b)=>a+b.grade,0);
   let avg=(sum/grades.length).toFixed(2);
   document.getElementById("avg").textContent=avg;
@@ -129,4 +140,3 @@ render();
 
 </body>
 </html>
-  
