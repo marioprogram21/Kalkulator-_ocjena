@@ -4,76 +4,44 @@
 <meta charset="UTF-8">
 <title>Kalkulator ocjena</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#ff9900">
 <style>
-body {
-  font-family:'Arial',sans-serif;
-  margin:0;
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  min-height:100vh;
-  transition: all 0.3s;
-}
-body.light { background:white; color:black; }
-body.dark { background:#121212; color:white; }
+body { font-family:'Arial',sans-serif'; margin:0; padding:20px; display:flex; justify-content:center; background:#121212; color:white; transition:0.3s;}
+body.light { background:#f0f0f0; color:black; }
 
-h1 { margin-bottom:20px; }
+h1 { text-align:center; margin-bottom:20px; }
 .box {
-  background:#1f1f1f;
-  padding:25px;
-  border-radius:20px;
-  width:350px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  box-shadow:0 0 25px rgba(0,0,0,0.4);
-  transition: all 0.3s;
+  width:360px; padding:20px; border-radius:20px; background:#1f1f1f; box-shadow:0 0 20px rgba(0,0,0,0.4); transition:0.3s;
 }
-body.light .box { background:#f0f0f0; }
+body.light .box { background:#fff; color:black; }
 
 .ocjena-card {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:8px 0;
-  padding:10px 15px;
-  width:100%;
-  background:#121212;
-  border-radius:12px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-  transition: background 0.3s;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 15px; margin-bottom:10px;
+  border-radius:12px; background:#2c2c2c; box-shadow:0 2px 6px rgba(0,0,0,0.3);
 }
-body.light .ocjena-card { background:#fff; }
+body.light .ocjena-card { background:#f9f9f9; }
 
 .ocjena-card input {
-  width:60px;
-  padding:8px;
-  border-radius:6px;
-  border:1px solid #333;
-  text-align:center;
-  background:#121212;
-  color:white;
+  width:60px; padding:8px; border-radius:6px; border:1px solid #333; text-align:center; background:#121212; color:white;
 }
-body.light .ocjena-card input { background:#f9f9f9; color:black; border:1px solid #ccc; }
+body.light .ocjena-card input { background:#fff; color:black; border:1px solid #ccc; }
 
 .delete { background:red; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; }
-
-.btn-group { display:flex; gap:10px; flex-wrap:wrap; margin-top:15px; }
+.btn-group { display:flex; justify-content:space-between; margin-top:15px; }
 button { padding:10px 15px; border:none; border-radius:8px; cursor:pointer; background:#ff9900; color:white; font-weight:bold; }
-#rezultat { margin-top:15px; font-size:1.3em; }
-#poruka { margin-top:5px; }
+button:hover { background:#ffb74d; }
 
-#themeToggle { margin-bottom:15px; }
-footer { margin-top:auto; opacity:0.7; }
+#themeToggle { margin-bottom:15px; width:100%; padding:12px; border-radius:8px; border:none; background:#666; color:white; cursor:pointer; }
+#themeToggle:hover { background:#888; }
+
+#rezultat { margin-top:15px; text-align:center; font-size:1.3em; }
+#poruka { text-align:center; }
+footer { margin-top:10px; text-align:center; opacity:0.7; }
 </style>
 </head>
-<body class="light">
-
+<body class="dark">
 <h1>Kalkulator ocjena</h1>
 <button id="themeToggle">Tamna/Svijetla tema</button>
-
 <div class="box">
   <div id="ocjene"></div>
   <div class="btn-group">
@@ -81,24 +49,21 @@ footer { margin-top:auto; opacity:0.7; }
     <button onclick="izracunaj()">Izračunaj</button>
     <button onclick="obrisiSve()">🗑 Obriši sve</button>
   </div>
-  <h2 id="rezultat"></h2>
-  <p id="poruka"></p>
+  <div id="rezultat"></div>
+  <div id="poruka"></div>
 </div>
-
 <footer>Izradio Mario</footer>
 
 <script>
-// Tema
 const body = document.body;
 const themeBtn = document.getElementById("themeToggle");
-themeBtn.addEventListener("click", () => {
+themeBtn.addEventListener("click", ()=>{
   body.classList.toggle("light");
   body.classList.toggle("dark");
   localStorage.setItem("theme", body.className);
 });
 if(localStorage.getItem("theme")) body.className = localStorage.getItem("theme");
 
-// Funkcije kalkulatora
 function dodaj(v=""){
   const div=document.getElementById("ocjene");
   const wrap=document.createElement("div");
@@ -106,19 +71,24 @@ function dodaj(v=""){
   const input=document.createElement("input");
   input.type="number"; input.placeholder="1-5"; input.value=v;
   input.oninput=spremi;
-  const btn=document.createElement("button"); btn.innerText="X"; btn.className="delete"; btn.onclick=()=>{wrap.remove();spremi();};
-  wrap.appendChild(input); wrap.appendChild(btn); div.appendChild(wrap); spremi();
+  const btn=document.createElement("button");
+  btn.innerText="X"; btn.className="delete";
+  btn.onclick=()=>{wrap.remove(); spremi();};
+  wrap.appendChild(input);
+  wrap.appendChild(btn);
+  div.appendChild(wrap);
+  spremi();
 }
 function izracunaj(){
   const inputs=document.querySelectorAll("#ocjene input");
   let suma=0,count=0;
   inputs.forEach(i=>{let v=Number(i.value); if(v>=1&&v<=5){suma+=v; count++;}});
-  if(count===0){rezultat.innerText="Unesi ocjene!"; poruka.innerText=""; return;}
+  if(count===0){document.getElementById("rezultat").innerText="Unesi ocjene!"; document.getElementById("poruka").innerText=""; return;}
   let p=suma/count;
-  rezultat.innerText="Prosjek: "+p.toFixed(2);
-  poruka.innerText=p>=4.5?"🔥 Odličan!":p>=3.5?"👍 Vrlo dobar":p>=2.5?"🙂 Dobar":"😬 Moraš učiti";
+  document.getElementById("rezultat").innerText="Prosjek: "+p.toFixed(2);
+  document.getElementById("poruka").innerText=p>=4.5?"🔥 Odličan!":p>=3.5?"👍 Vrlo dobar":p>=2.5?"🙂 Dobar":"😬 Moraš učiti";
 }
-function obrisiSve(){document.getElementById("ocjene").innerHTML=""; localStorage.removeItem("ocjene"); rezultat.innerText=""; poruka.innerText="";}
+function obrisiSve(){document.getElementById("ocjene").innerHTML=""; localStorage.removeItem("ocjene"); document.getElementById("rezultat").innerText=""; document.getElementById("poruka").innerText="";}
 function spremi(){const arr=[];document.querySelectorAll("#ocjene input").forEach(i=>arr.push(i.value));localStorage.setItem("ocjene",JSON.stringify(arr));}
 function ucitaj(){const data=JSON.parse(localStorage.getItem("ocjene"));if(data){data.forEach(v=>dodaj(v));}else dodaj();}
 ucitaj();
