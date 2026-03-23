@@ -5,55 +5,19 @@
 <title>Kalkulator općeg uspjeha</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body { font-family:'Segoe UI',sans-serif; margin:0; padding:20px; display:flex; justify-content:center; background:#121212; color:white; transition:0.3s;}
-body.light { background:#f0f0f0; color:black; }
-
-.app { width:360px; padding:30px; border-radius:25px; background:rgba(30,30,30,0.9); box-shadow:0 15px 35px rgba(0,0,0,0.2); transition:0.3s;}
-body.light .app { background:rgba(255,255,255,0.95); }
-
-h2 { text-align:center; font-size:2em; margin-bottom:20px; }
-
-.input-row {
-  display:flex; 
-  gap:10px; 
-  padding:10px 12px; 
-  border-radius:12px; 
-  background:rgba(50,50,50,0.7); 
-  margin-bottom:10px; 
-  box-shadow:0 2px 6px rgba(0,0,0,0.3);
-  transition:0.3s;
-}
-body.light .input-row { background:rgba(255,255,255,0.9); }
-
-select,input[type=number] { flex:1; padding:10px; border-radius:8px; border:1px solid #333; font-size:1em; }
-body.light select,input[type=number] { border:1px solid #ccc; background:white; color:black; }
-
-button { width:48%; padding:12px; margin:4px 0; border:none; border-radius:12px; font-weight:bold; background:#ff9900; color:white; cursor:pointer; transition:0.2s;}
-button:hover { background:#ffb74d; }
-
+body { font-family:Arial,sans-serif; margin:0; padding:20px; display:flex; justify-content:center; background:#121212; color:white; }
+.app { width:360px; background:#1f1f1f; padding:20px; border-radius:25px; box-shadow:0 0 20px rgba(0,0,0,0.5); }
+h2 { text-align:center; }
+.input-row { display:flex; gap:10px; padding:10px; margin:10px 0; border-radius:12px; background:#2c2c2c; align-items:center; }
+.input-row select,input { flex:1; padding:8px; border-radius:6px; border:1px solid #333; background:#121212; color:white; }
+button { padding:10px 15px; border:none; border-radius:8px; background:#ff9900; color:white; font-weight:bold; cursor:pointer; margin:5px 0; }
 .cards { margin-top:15px; }
-.card { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-radius:14px; margin-top:6px; font-weight:bold; background:rgba(255,255,255,0.2); }
-body.light .card { background:rgba(255,255,255,0.8); }
-
-.grade { text-align:right; width:20%; }
-.delete { background:rgba(0,0,0,0.1); border:none; color:black; border-radius:8px; cursor:pointer; padding:2px 6px; font-weight:bold; font-size:0.8em; transition:0.2s; }
-.delete:hover { background:rgba(0,0,0,0.2); }
-
-.avg { text-align:center; margin-top:20px; }
-.avg-number { font-size:48px; font-weight:bold; letter-spacing:1px; }
-.small { opacity:0.8; font-size:0.9em; }
-
-#themeToggle { margin-bottom:15px; width:100%; padding:12px; border-radius:8px; border:none; background:#666; color:white; cursor:pointer; }
-#themeToggle:hover { background:#888; }
-
-footer { margin-top:10px; text-align:center; opacity:0.7; }
+.card { display:flex; justify-content:space-between; padding:10px; border-radius:12px; background:#2c2c2c; margin-top:5px; }
 </style>
 </head>
-<body class="dark">
-
+<body>
 <div class="app">
 <h2>Kalkulator općeg uspjeha</h2>
-<button id="themeToggle">Tamna/Svijetla tema</button>
 
 <div class="input-row">
   <select id="subject">
@@ -61,16 +25,8 @@ footer { margin-top:10px; text-align:center; opacity:0.7; }
     <option>Matematika</option>
     <option>Hrvatski jezik</option>
     <option>Engleski jezik</option>
-    <option>Priroda</option>
-    <option>Povijest</option>
-    <option>Geografija</option>
-    <option>Likovna kultura</option>
-    <option>Glazbena kultura</option>
-    <option>Tjelesna i zdravstvena kultura</option>
-    <option>Tehnička kultura</option>
-    <option>Informatika</option>
   </select>
-  <input type="number" id="grade" placeholder="Ocjena (1-5)">
+  <input type="number" id="grade" placeholder="1-5">
 </div>
 
 <div style="display:flex; justify-content:space-between;">
@@ -80,63 +36,26 @@ footer { margin-top:10px; text-align:center; opacity:0.7; }
 
 <div class="cards" id="cards"></div>
 
-<div class="avg">
-  <div class="avg-number" id="avg">0.00</div>
-  <div class="small">Prosjek</div>
-</div>
-
-<footer>Izradio Mario</footer>
 </div>
 
 <script>
-// Tema
-const themeBtn = document.getElementById("themeToggle");
-themeBtn.addEventListener("click", () => {
-  document.body.classList.toggle("light");
-  document.body.classList.toggle("dark");
-  localStorage.setItem("theme", document.body.className);
-});
-if(localStorage.getItem("theme")) document.body.className = localStorage.getItem("theme");
-
-// Funkcije kalkulatora
-let grades = JSON.parse(localStorage.getItem("grades")) || [];
-function save(){ localStorage.setItem("grades", JSON.stringify(grades)); }
+let grades = [];
 function add(){
   const subject = document.getElementById("subject").value;
-  const grade = parseInt(document.getElementById("grade").value);
+  const grade = document.getElementById("grade").value;
   if(!subject || grade<1 || grade>5) return;
   grades.push({subject, grade});
-  save();
-  render();
-  document.getElementById("subject").selectedIndex = 0;
-  document.getElementById("grade").value = "";
+  render(); document.getElementById("subject").selectedIndex=0; document.getElementById("grade").value="";
 }
-function remove(i){ grades.splice(i,1); save(); render(); }
-function removeAll(){ grades=[]; save(); render(); }
+function removeAll(){ grades=[]; render();}
 function render(){
-  const container = document.getElementById("cards");
-  container.innerHTML = "";
-  grades.forEach((g,i)=>{
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `<span>${g.subject}</span><span class="grade">${g.grade}</span>`;
-    const btn = document.createElement("button");
-    btn.className = "delete";
-    btn.textContent = "x";
-    btn.onclick = ()=>remove(i);
-    card.appendChild(btn);
+  const container = document.getElementById("cards"); container.innerHTML="";
+  grades.forEach((g)=>{
+    const card = document.createElement("div"); card.className="card";
+    card.innerHTML = `<span>${g.subject}</span><span>${g.grade}</span>`;
     container.appendChild(card);
   });
-  calc();
 }
-function calc(){
-  if(grades.length===0){ document.getElementById("avg").textContent="0.00"; return; }
-  let sum=grades.reduce((a,b)=>a+b.grade,0);
-  let avg=(sum/grades.length).toFixed(2);
-  document.getElementById("avg").textContent=avg;
-}
-render();
 </script>
-
 </body>
 </html>
