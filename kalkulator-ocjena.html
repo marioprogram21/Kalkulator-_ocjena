@@ -8,20 +8,41 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
 <style>
-body { font-family:'Arial',sans-serif; background:#121212; color:white; margin:0; display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:20px; }
+/* Temeljne boje za svijetlu i tamnu temu */
+body { font-family:'Arial',sans-serif; margin:0; display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:20px; transition: all 0.3s; }
+body.light { background:white; color:black; }
+body.dark { background:#121212; color:white; }
+
 h1 { margin-bottom:20px; }
-.box { background:#1f1f1f; padding:25px; border-radius:20px; width:350px; display:flex; flex-direction:column; align-items:center; box-shadow:0 0 25px rgba(0,0,0,0.4);}
-.ocjena-card { display:flex; justify-content:space-between; margin:8px 0; padding:10px 15px; width:100%; background:#121212; border-radius:12px; }
+.box { background:#1f1f1f; padding:25px; border-radius:20px; width:350px; display:flex; flex-direction:column; align-items:center; box-shadow:0 0 25px rgba(0,0,0,0.4); transition: background 0.3s; }
+body.light .box { background:#f0f0f0; }
+
+.ocjena-card { display:flex; justify-content:space-between; margin:8px 0; padding:10px 15px; width:100%; border-radius:12px; transition: background 0.3s; }
+body.dark .ocjena-card { background:#121212; }
+body.light .ocjena-card { background:#e0e0e0; }
+
 .ocjena-card input { width:60px; padding:8px; border-radius:6px; border:none; text-align:center; }
 .delete { background:red; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; }
+
 .btn-group { display:flex; gap:10px; flex-wrap:wrap; margin-top:15px; }
 button { padding:10px 15px; border:none; border-radius:8px; cursor:pointer; background:#ff9900; color:white; font-weight:bold; }
 #rezultat { margin-top:15px; font-size:1.3em; }
 #poruka { margin-top:5px; }
 footer { margin-top:auto; opacity:0.7; }
+
+/* Gumb za preuzimanje i tamnu/svijetlu temu */
+#menu { display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap; }
 </style>
 </head>
-<body>
+<body class="dark">
+
+<div id="menu">
+    <button id="toggleTheme">Tamna/Svijetla tema</button>
+    <a href="https://github.com/marioprogram21/Kalkulator-_ocjena/archive/refs/heads/main.zip" download>
+        <button>Preuzmi App</button>
+    </a>
+</div>
+
 <h1>Kalkulator ocjena</h1>
 <div class="box">
     <div id="ocjene"></div>
@@ -34,7 +55,17 @@ footer { margin-top:auto; opacity:0.7; }
     <p id="poruka"></p>
 </div>
 <footer>Izradio Mario</footer>
+
 <script>
+/* TAMNA/SVIJETLA TEMA */
+const body = document.body;
+const toggleBtn = document.getElementById("toggleTheme");
+toggleBtn.addEventListener("click", () => {
+    body.classList.toggle("dark");
+    body.classList.toggle("light");
+});
+
+/* FUNKCIJE ZA OCJENE */
 function dodaj(v=""){
     const div=document.getElementById("ocjene");
     const wrap=document.createElement("div");
@@ -45,6 +76,7 @@ function dodaj(v=""){
     const btn=document.createElement("button"); btn.innerText="X"; btn.className="delete"; btn.onclick=()=>{wrap.remove();spremi();};
     wrap.appendChild(input); wrap.appendChild(btn); div.appendChild(wrap); spremi();
 }
+
 function izracunaj(){
     const inputs=document.querySelectorAll("#ocjene input");
     let suma=0,count=0;
@@ -54,6 +86,7 @@ function izracunaj(){
     rezultat.innerText="Prosjek: "+p.toFixed(2);
     poruka.innerText=p>=4.5?"🔥 Odličan!":p>=3.5?"👍 Vrlo dobar":p>=2.5?"🙂 Dobar":"😬 Moraš učiti";
 }
+
 function obrisiSve(){document.getElementById("ocjene").innerHTML=""; localStorage.removeItem("ocjene"); rezultat.innerText=""; poruka.innerText="";}
 function spremi(){const arr=[];document.querySelectorAll("#ocjene input").forEach(i=>arr.push(i.value));localStorage.setItem("ocjene",JSON.stringify(arr));}
 function ucitaj(){const data=JSON.parse(localStorage.getItem("ocjene"));if(data){data.forEach(v=>dodaj(v));}else dodaj();}
